@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
     public UnityEvent coinCollected;
     public UnityEvent landed;
 
+    private PlayerHeath playerHeath;
+
 
     /// <summary>
     /// Kiểm tra xem người chơi có đang ở trên mặt đất hay không
@@ -34,6 +36,7 @@ public class Player : MonoBehaviour
     /// Vận tốc theo trục Y (chiều dọc) của người chơi
     /// </summary>
     private float verticalVelocity = 0f;
+    private bool InputEnable = true;
 
     #region Input Handing Melthods
     /// <summary>
@@ -41,6 +44,11 @@ public class Player : MonoBehaviour
     /// </summary>
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (InputEnable == false)
+        {
+            MoveInput = Vector2.zero;
+            return;
+        }
         MoveInput = context.ReadValue<Vector2>();
     }
 
@@ -49,6 +57,14 @@ public class Player : MonoBehaviour
     /// </summary>
     public void OnAttack(InputAction.CallbackContext context)
     {
+        if (InputEnable == false)
+        {
+            MoveInput = Vector2.zero;
+
+            return;
+        }
+
+        //TODO: Xử lý tấn công
 
     }
 
@@ -57,6 +73,11 @@ public class Player : MonoBehaviour
     /// </summary>
     public void OnJump(InputAction.CallbackContext context)
     {
+        if (InputEnable == false)
+        {
+            jumpInput = false;
+            return;
+        }
         if (context.performed)
         {
             jumpInput = true;
@@ -66,13 +87,32 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Unity Callback Methods (start, update, etc)
+
+    private void Start()
+    {
+        playerHeath = GetComponent<PlayerHeath>();
+    }
     /// <summary>
     /// Được gọi mỗi frame để cập nhật di chuyển và animation
     /// </summary>
     private void Update()
     {
+        if(playerHeath != null && !playerHeath.Alive )
+        {
+            return;
+        }
         UpdateMovement();
         UpdateAnimator();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var levelExit = other.GetComponent<LevelExit>();
+
+        if(levelExit!= null)
+        {
+            levelExit.ExitLevel();
+        }
     }
     #endregion
 
@@ -184,6 +224,13 @@ public class Player : MonoBehaviour
         animator.SetFloat("Speed", speed);
         animator.SetBool("Jump", jump);
         animator.SetBool("Fall", fall);
+    }
+
+    public void OnDeath()
+    {
+        
+        animator.SetBool("Alive", false);
+        InputEnable = false;
     }
     #endregion
 }
