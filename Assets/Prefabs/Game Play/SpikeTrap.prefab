@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeDuration: 2
-  transitionDuration: 0.4
+  transitionDuration: 0.3
   SpikeActivePosition: {x: 0, y: 0, z: 0}
   SpikeIdlePosition: {x: 0, y: -0.5, z: 0}
   spikeActivateSound: {fileID: 8300000, guid: 91116de37daf9634fae65d12767d00e0, type: 3}
@@ -388,7 +388,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8946286683157319947}
   serializedVersion: 8
-  lengthInSec: 1
+  lengthInSec: 1.3
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 3
@@ -462,7 +462,7 @@ ParticleSystem:
     enabled: 1
     startLifetime:
       serializedVersion: 2
-      minMaxState: 3
+      minMaxState: 0
       scalar: 0.4
       minScalar: 0.0001
       maxCurve:
@@ -1011,15 +1011,15 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 16
+    type: 15
     angle: 23.960152
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
-    radiusThickness: 0
+    radiusThickness: 1
     donutRadius: 0.3
     m_Position: {x: 0, y: 0, z: 0.2}
     m_Rotation: {x: -0, y: 0, z: 0}
-    m_Scale: {x: 0.8, y: 0.8, z: 0.2}
+    m_Scale: {x: 0.85, y: 0.85, z: 0.2}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -1327,7 +1327,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 60
+        scalar: 240
         minScalar: 0
         maxCurve:
           serializedVersion: 2
