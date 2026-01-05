@@ -36,10 +36,12 @@ public class SpikeTrap : MonoBehaviour
     {
         state = newState;
         timer = 0f;
-
+        spikeMesh.SetActive(true);
         // Phát âm thanh kích hoạt khi chuyển sang trạng thái TransitionToActive
-        if(state == EState.TransitionToActive)
+        if (state == EState.TransitionToActive)
         {
+            ActivationEffect.Play();
+
             audioSource.PlayOneShot(spikeActivateSound);
         }
     }
@@ -47,6 +49,7 @@ public class SpikeTrap : MonoBehaviour
     private void Start()
     {
         // Khởi tạo trạng thái ban đầu
+        HideSpikes();
     }
     
     private void Update()
@@ -58,8 +61,7 @@ public class SpikeTrap : MonoBehaviour
             Vector3 p = Vector3.Lerp(SpikeIdlePosition, SpikeActivePosition, timer / transitionDuration);
             spikeMesh.transform.localPosition = p;
             
-            // Phát hiệu ứng hạt
-            ActivationEffect.Play();
+           
             
             // Nếu thời gian chuyển đổi kết thúc, chuyển sang trạng thái Active
             if (timer >= transitionDuration)
@@ -97,8 +99,8 @@ public class SpikeTrap : MonoBehaviour
     /// <summary>
     /// Kích hoạt spike trap (từ context menu)
     /// </summary>
-    [ContextMenu("Activate Spike Trap")]
-    void Activate()
+    //[ContextMenu("Activate Spike Trap")]
+    public void Activate()
     {
         // Chỉ kích hoạt nếu spike đang ở trạng thái Idle
         if (state == EState.Idle)
