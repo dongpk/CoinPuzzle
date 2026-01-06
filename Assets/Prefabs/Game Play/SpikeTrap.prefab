@@ -156,8 +156,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8e5abcdb9f90f43a45d08ccbae6c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeDuration: 2
-  transitionDuration: 0.3
+  activation: 0
+  startActive: 0
+  activationDelay: 0.5
+  activeDuration: 1.5
+  transitionDuration: 0.1
   SpikeActivePosition: {x: 0, y: 0, z: 0}
   SpikeIdlePosition: {x: 0, y: -0.5, z: 0}
   spikeActivateSound: {fileID: 8300000, guid: 91116de37daf9634fae65d12767d00e0, type: 3}
@@ -186,9 +189,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 4
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
