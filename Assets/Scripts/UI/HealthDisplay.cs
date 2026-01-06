@@ -14,8 +14,8 @@ public class HealthDisplay : MonoBehaviour
         set
         {
             int oldValue = points;
-            points = value;
-
+            points = Mathf.Max(value,0);
+            
             ManageIcon(value-oldValue);
         }
     }
