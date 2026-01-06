@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerHeath : MonoBehaviour
+public class PlayerHeath : MonoBehaviour,IDamageable
 {
     [SerializeField] int points = 6;
     public int Points
