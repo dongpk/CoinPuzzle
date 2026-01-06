@@ -143,12 +143,12 @@ GameObject:
   - component: {fileID: 6092075562720544241}
   - component: {fileID: 6230094479750066221}
   - component: {fileID: 2199290180848498095}
-  - component: {fileID: 6698265323257416632}
   - component: {fileID: 5093630595585834342}
   - component: {fileID: 4709543299081016241}
   - component: {fileID: 7804165604063265649}
   - component: {fileID: 8333095510214975009}
   - component: {fileID: 7155341694763446046}
+  - component: {fileID: 1269187280979580750}
   m_Layer: 0
   m_Name: Sparanta
   m_TagString: Untagged
@@ -282,10 +282,6 @@ MonoBehaviour:
     m_ActionName: 'UI/Submit[/Keyboard/enter]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 15cef263-9014-4fd5-94d9-4e4a6234a6ef
-    m_ActionName: 'UI/Cancel[/Keyboard/escape]'
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: 32b35790-4ed0-4e9a-aa41-69ac6d629449
     m_ActionName: 'UI/Point[/Mouse/position]'
   - m_PersistentCalls:
@@ -312,6 +308,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2199290180848498095}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: OnPause
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f4051b75-f7d5-4910-b7b4-d6b21f9a4642
+    m_ActionName: 'Player/Cancel[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -474,18 +486,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6698265323257416632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2335784879278944652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da9ff03a374bf874a9d253a9dcbda5c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5093630595585834342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -498,7 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b63238c315e4bc4ba6dee70541e76d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landingFX: {fileID: 6532635919460005841, guid: 1c40d38b81ae2f34da540aa462917e44, type: 3}
+  landingFX: {fileID: 7298693909656950082, guid: 750126084228ac444a69619418b4f9ba, type: 3}
 --- !u!114 &4709543299081016241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,7 +575,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -649,7 +649,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 1.1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -659,6 +659,14 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!81 &1269187280979580750
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2335784879278944652}
+  m_Enabled: 1
 --- !u!1 &2438233258575931535
 GameObject:
   m_ObjectHideFlags: 0
