@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[SelectionBase]
 public class CoinAnimator : MonoBehaviour
 {
     [SerializeField] float argularSpeed = 50f;
