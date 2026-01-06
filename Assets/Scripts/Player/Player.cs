@@ -84,6 +84,13 @@ public class Player : MonoBehaviour
         }
         jumpInput = context.performed;
     }
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            UIManager.Instance.TogglePause();
+        }
+    }
     #endregion
 
     #region Unity Callback Methods (start, update, etc)
