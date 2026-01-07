@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LevelExit : MonoBehaviour
 {
@@ -18,7 +17,8 @@ public class LevelExit : MonoBehaviour
     }
     public void ExitLevel()
     {
-        SceneManager.LoadScene(targetScene);
+        UIManager.Instance.TryLoadScene(targetScene);
+
     }
 
     private void Update()
