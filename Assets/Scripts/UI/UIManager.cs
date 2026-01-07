@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,14 +12,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject HUD;
     [SerializeField] GameObject GameOverMenu;
     [SerializeField] GameObject PauseMenu;
+    [SerializeField] GameObject LoadingScreen;
+    [SerializeField] Slider loadingScreenSlider;
 
     public HealthDisplay healthDisplay;
     public ProgressUI progressUI;
+    Coroutine sceneLoadingCoroutine;
 
 
 
     public static UIManager Instance { get; private set; }
 
+
+    #region unity methods
     private void Awake()
     {
         Instance = this;
@@ -25,15 +33,30 @@ public class UIManager : MonoBehaviour
         GameOverMenu.SetActive(false);
         MainMenu.SetActive(false);
         HUD.SetActive(false);
+        LoadingScreen.SetActive(false);
     }
     private void Start()
     {
-        
+
     }
+    private void Update()
+    {
+        //if (sceneLoadingCoroutine == null && LoadingScreen.activeSelf)
+        //{
+        //    if (Keyboard.current.anyKey.wasPressedThisFrame)
+        //    {
+        //        LoadingScreen.SetActive(false);
+        //    }
+        //}
+    }
+
+    #endregion
+
     public void ExitToMainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
-
+        Time.timeScale = 1f;
+        TryLoadScene("MainMenu");
+        
     }
     /// <summary>
     /// Bắt đầu trò chơi từ menu chính
@@ -41,7 +64,32 @@ public class UIManager : MonoBehaviour
     public void StartGame()
     {
         MainMenu.SetActive(false);
-        SceneManager.LoadScene("Level1");
+        //SceneManager.LoadSceneAsync("Level1");
+        TryLoadScene("Level1");
+    }
+    IEnumerator LoadScene(string sceneName)
+    {
+        AsyncOperation loadingOperation = SceneManager.LoadSceneAsync(sceneName);
+        LoadingScreen.SetActive(true);
+
+        while (!loadingOperation.isDone)
+        {
+            //Debug.Log($"loading: {loadingOperation.progress * 100f}%");
+            loadingScreenSlider.value = loadingOperation.progress;
+
+            yield return null;
+        }
+
+        loadingScreenSlider.value = 1f;
+        LoadingScreen.SetActive(false);
+        sceneLoadingCoroutine = null;
+    }
+    public void TryLoadScene(string targetScene)
+    {
+        if (sceneLoadingCoroutine == null)
+        {
+            sceneLoadingCoroutine = StartCoroutine(LoadScene(targetScene));
+        }
     }
     public void ShowMainMenu()
     {
@@ -63,7 +111,7 @@ public class UIManager : MonoBehaviour
     [ContextMenu("Show Game Over Menu")]
     public void ShowGameOverMenu()
     {
-        if(PauseMenu.activeSelf)
+        if (PauseMenu.activeSelf)
         {
             return;
         }
@@ -71,9 +119,9 @@ public class UIManager : MonoBehaviour
 
         ClearCameraTarget();
     }
-     void ShowPauseMenu()
+    void ShowPauseMenu()
     {
-        if(GameOverMenu.activeSelf)
+        if (GameOverMenu.activeSelf)
         {
             return;
         }
@@ -88,7 +136,7 @@ public class UIManager : MonoBehaviour
     }
     public void TogglePause()
     {
-        if(PauseMenu.activeSelf)
+        if (PauseMenu.activeSelf)
         {
             ResumeGame();
         }
