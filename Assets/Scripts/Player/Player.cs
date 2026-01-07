@@ -4,13 +4,16 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float speed = 10f;
+    [SerializeField] private float speed = 3f;
+    [SerializeField] private float sprintSpeed = 7f;
+
+    [Space(20)]
+    [SerializeField] private float acceleration = 5f;
+    [SerializeField] private float deceleration = 5f;
+
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float gravityScale = 2f;
     [SerializeField] private float turnSpeed = 60f;
-    private Vector2 MoveInput;
-    private bool jumpInput;
-    bool wasGrounded = false;
 
     [Header("Component References ")]
     [SerializeField] CharacterController characterController;
@@ -20,10 +23,26 @@ public class Player : MonoBehaviour
     public UnityEvent jumped;
     public UnityEvent coinCollected;
     public UnityEvent landed;
+    public UnityEvent sprintStarted;
+    public UnityEvent sprintFinished;
+
+
+    public Vector3 CharacterControllerVelocity { get; private set; }
+    public float CharacterControllerSpeed { get; private set; }
+
 
     private PlayerHeath playerHeath;
+    private Vector2 MoveInput;
+    private bool jumpInput;
+    private bool sprintInput;
+    private Vector3 lastNonZeroMoveInput3D;
 
 
+    bool wasGrounded = false;
+    bool wasSprinting = false;
+    private float TargetMoveSpeed => sprintInput ? sprintSpeed : speed;
+
+    private float CurrentSpeed = 0f;
     /// <summary>
     /// Kiểm tra xem người chơi có đang ở trên mặt đất hay không
     /// </summary>
@@ -31,6 +50,9 @@ public class Player : MonoBehaviour
     {
         get { return characterController.isGrounded; }
     }
+
+    public bool Sprinting { get;private set; }=false;
+    
 
     /// <summary>
     /// Vận tốc theo trục Y (chiều dọc) của người chơi
@@ -91,6 +113,23 @@ public class Player : MonoBehaviour
             UIManager.Instance.TogglePause();
         }
     }
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if (InputEnable == false)
+        {
+            sprintInput = false;
+            return;
+        }
+        if (context.performed)
+        {
+            sprintInput = true;
+        }
+        else if (context.canceled)
+        {
+            sprintInput = false;
+        }
+
+    }
     #endregion
 
     #region Unity Callback Methods (start, update, etc)
@@ -99,24 +138,24 @@ public class Player : MonoBehaviour
     {
         playerHeath = GetComponent<PlayerHeath>();
     }
-    /// <summary>
-    /// Được gọi mỗi frame để cập nhật di chuyển và animation
-    /// </summary>
+
     private void Update()
     {
-        if(playerHeath != null && !playerHeath.Alive )
+        if (playerHeath != null && !playerHeath.Alive)
         {
             return;
         }
+        UpdateSprinting();
         UpdateMovement();
         UpdateAnimator();
+        UpdateCurrentSpeed();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         var levelExit = other.GetComponent<LevelExit>();
 
-        if(levelExit!= null)
+        if (levelExit != null)
         {
             levelExit.ExitLevel();
         }
@@ -124,6 +163,30 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Charactor Control Method
+    void UpdateSprinting()
+    {
+        wasSprinting = Sprinting;
+
+        Sprinting = Grounded && sprintInput && CharacterControllerSpeed > speed;
+        
+        if (!wasSprinting && Sprinting)
+        {
+            sprintStarted.Invoke();
+        }
+
+        if(wasSprinting && !Sprinting)
+        {
+            sprintFinished.Invoke();
+        }
+    }
+    void UpdateCurrentSpeed()
+    {
+        CharacterControllerVelocity = characterController.velocity;
+        Vector3 horizontalVelocity = CharacterControllerVelocity;
+        horizontalVelocity.y = 0f;
+        CharacterControllerSpeed = horizontalVelocity.magnitude; 
+    }
+
     /// <summary>
     /// Cập nhật di chuyển và nhảy của nhân vật
     /// </summary>
@@ -131,7 +194,19 @@ public class Player : MonoBehaviour
     {
         // Chuyển đổi input 2D thành vector 3D
         Vector3 moveInput3D = new Vector3(MoveInput.x, 0f, MoveInput.y);
-        Vector3 motion = moveInput3D * speed * Time.deltaTime;
+        if (moveInput3D.magnitude > 0.001f)
+        {
+            lastNonZeroMoveInput3D = moveInput3D;
+            CurrentSpeed = Mathf.MoveTowards(CurrentSpeed, TargetMoveSpeed, acceleration * Time.deltaTime);
+
+        }
+        else
+        {
+            CurrentSpeed = Mathf.MoveTowards(CurrentSpeed, 0f, deceleration * Time.deltaTime);
+
+        }
+
+        Vector3 motion = lastNonZeroMoveInput3D * CurrentSpeed * Time.deltaTime;
 
         // Cập nhật hướng quay của nhân vật
         UpdatePlayerRotation(moveInput3D);
@@ -235,7 +310,7 @@ public class Player : MonoBehaviour
 
     public void OnDeath()
     {
-        
+
         animator.SetBool("Alive", false);
         InputEnable = false;
     }
